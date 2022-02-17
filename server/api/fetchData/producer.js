@@ -20,7 +20,6 @@ exports.createJobToProcess= function(req, res){
                     pairName: pair.pairName
                 }
                 createJobQueue(arg).then(function(result) {
-                    console.log(result)
                     cb(null, result)
                 }).catch(function(err) {
                     cb(err)
@@ -42,6 +41,8 @@ exports.createJobToProcess= function(req, res){
 var createJobQueue= function(arg){
     var d= Q.defer()
     try{
+        //we can use AWS queues instead of 'kue' package.
+        
         queue.create('cryptopair_process', arg).attempts(3).removeOnComplete(true).save(function(err){
             if(err){
                 console.log("Job could not be inserted in queue.");
