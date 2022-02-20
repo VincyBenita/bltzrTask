@@ -6,9 +6,12 @@ const express = require("express");
 const router = express.Router();
 var CryptoPair = require('./cryptoPair.model')
 
+//to add the crypto pair to be tracked
 exports.addCryptoPair = function (req, res) {
+
+    //check for crypto pair name
     if (!req.body.pairName) {
-        return res.status(422).json({ message: "pair not defined" })
+        return res.status(405).json({ message: "Invalid Input" })
     }
     var query= {
         pairName: req.body.pairName
@@ -20,6 +23,8 @@ exports.addCryptoPair = function (req, res) {
             return handleError(res, err); 
         }
         console.log(!cryptoPair)
+
+        //if the crypto pair does not exist, then create a new one
         if (!(cryptoPair && cryptoPair.pairName)) {
             console.log("here")
             var newCryptoPair = new CryptoPair(req.body);
@@ -29,6 +34,7 @@ exports.addCryptoPair = function (req, res) {
                 res.status(201).json({ message: "New Crypto Pair added" });
             });
         }
+        //if the crypto pair already exists, then update the status to true
         else if (cryptoPair && cryptoPair.pairName) {
             var updatedPair = cryptoPair
             updatedPair.status = true
@@ -46,6 +52,7 @@ exports.addCryptoPair = function (req, res) {
 
 }
 
+//to update the status of the crypto pair to false
 exports.removeTrackedPair = function (req, res) {
     if (!req.body.pairName) {
         return res.status(422).json({ message: "pair name not present" })

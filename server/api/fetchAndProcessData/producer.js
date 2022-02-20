@@ -8,7 +8,9 @@ var async= require('async')
 var ObjectId = require('mongoose').Types.ObjectId;
 
 
+//create a job to track each crypto pair with status=true
 exports.createJobToProcess= function(req, res){
+    console.log("check if here")
     CryptoPair.find({status: {$eq: true}}, {pairName: 1}, function(err, cryptoPairs){
         if(err){
             return res.status(500).json({message: err.message})
@@ -19,6 +21,8 @@ exports.createJobToProcess= function(req, res){
                     _id: new ObjectId(),
                     pairName: pair.pairName
                 }
+                
+                //push the job to queue
                 createJobQueue(arg).then(function(result) {
                     cb(null, result)
                 }).catch(function(err) {
@@ -38,6 +42,7 @@ exports.createJobToProcess= function(req, res){
     })
 }
 
+//function to add the process to the queue.
 var createJobQueue= function(arg){
     var d= Q.defer()
     try{

@@ -8,7 +8,7 @@
  module.exports = function (app) {
    app.use(cookieParser());
    app.use('/api/cryptoPair', require('./api/cryptoPair'));
-   app.use('/api/fetchData', require('./api/fetchData'));
+   app.use('/api/fetchAndProcessData', require('./api/fetchAndProcessData'));
   
    // All other routes should redirect to the index.html
    app.route('/*')
